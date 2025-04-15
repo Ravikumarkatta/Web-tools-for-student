@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4a6bff">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>AI Assistant</h2>
+      </div>
+      <nav role="navigation" aria-label="Main navigation">
+        <ul>
+          <li class="active" data-section="dashboard" role="menuitem" tabindex="0"><i class="fas fa-home"></i> Dashboard</li>
+          <li data-section="weather" role="menuitem" tabindex="0"><i class="fas fa-cloud-sun"></i> Weather</li>
+          <li data-section="AI Dashboard" role="home" tabindex="0"><i class="fas fa-cloud-sun"></i> HOME</li>
+          <li data-section="jobs" role="menuitem" tabindex="0"><i class="fas fa-briefcase"></i> Job Search</li>
+          <li data-section="news" role="menuitem" tabindex="0"><i class="fas fa-newspaper"></i> News</li>
+          <li data-section="currency" role="menuitem" tabindex="0"><i class="fas fa-dollar-sign"></i> Currency</li>
+          <li data-section="settings" role="menuitem" tabindex="0"><i class="fas fa-cog"></i> Settings</li>
+        </ul>
+      </nav>
+      <div class="user-profile">
+        <div class="avatar"><i class="fas fa-user"></i></div>
+        <span class="username">User</span>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header>
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" id="global-search" placeholder="Ask me anything..." />
+          <button id="search-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div class="user-actions">
+          <button id="notification-btn"><i class="fas fa-bell"></i></button>
+          <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="content-section active">
+        <h2>Dashboard</h2>
+        <div class="overview-cards">
+          <!-- Weather Card -->
+          <div class="card" id="weather-card">
+            <div class="card-header">
+              <h3>Weather</h3>
+              <i class="fas fa-cloud-sun"></i>
+            </div>
+            <div class="card-content">
+              <!-- Weather data container -->
+              <div id="weather-data" class="weather-info">
+                <div class="location">Loading location...</div>
+                <div class="temperature">--°C</div>
+                <div class="condition">Loading weather...</div>
+              </div>
+              <!-- Weather loading and error messages -->
+              <div id="weather-loading" class="hidden">Loading weather...</div>
+              <div id="weather-error" class="hidden"></div>
+            </div>
+          </div>
+          <!-- Jobs Card -->
+          <div class="card" id="jobs-card">
+            <div class="card-header">
+              <h3>Recent Jobs</h3>
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="card-content">
+              <!-- Jobs results container -->
+              <div id="jobs-results" class="job-listings">
+                <div id="jobs-list">
+                  <p class="empty-state">Use the search form to find job listings</p>
+                </div>
+              </div>
+              <!-- Jobs loading and error messages -->
+              <div id="jobs-loading" class="hidden">Loading jobs...</div>
+              <div id="jobs-error" class="hidden"></div>
+            </div>
+          </div>
+          <!-- News Card -->
+          <div class="card" id="news-card">
+            <div class="card-header">
+              <h3>Latest News</h3>
+              <i class="fas fa-newspaper"></i>
+            </div>
+            <div class="card-content">
+              <!-- News results container -->
+              <div id="news-results" class="news-articles">
+                <div id="news-list">
+                  <p class="loading">Loading news articles...</p>
+                </div>
+              </div>
+              <!-- News loading and error messages -->
+              <div id="news-loading" class="hidden">Loading news...</div>
+              <div id="news-error" class="hidden"></div>
+            </div>
+          </div>
+          <!-- Currency Card -->
+          <div class="card" id="currency-card">
+            <div class="card-header">
+              <h3>Currency Exchange</h3>
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="card-content">
+              <!-- Currency converter container -->
+              <div id="currency-converter" class="currency-converter">
+                <select id="from-currency">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="JPY">JPY</option>
+                </select>
+                <input type="number" id="currency-amount" value="1" />
+                <select id="to-currency">
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                  <option value="GBP">GBP</option>
+                  <option value="JPY">JPY</option>
+                </select>
+                <div id="conversion-result" class="conversion-result">
+                  <span>1 USD = -- EUR</span>
+                </div>
+                <button id="convert-btn">Convert</button>
+              </div>
+              <!-- Currency loading and error messages -->
+              <div id="currency-loading" class="hidden">Loading exchange rates...</div>
+              <div id="currency-error" class="hidden"></div>
+              <!-- Full converter section -->
+              <div class="conversion-result-full">
+                <div class="result-amount">--</div>
+                <div class="result-text">--</div>
+                <div class="exchange-rate">1 -- = -- --</div>
+                <div class="last-updated">Last updated: --</div>
+              </div>
+            </div>
+            <div class="popular-currencies">
+              <h3>Popular Currency Pairs</h3>
+              <div class="currency-pairs"></div>
+            </div>
+            <div class="historical-rates">
+              <h3>Historical Exchange Rates</h3>
+              <div class="chart-container">
+                <canvas id="exchange-rate-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Weather Section -->
+      <section id="weather" class="content-section">
+        <h2>Weather Forecast</h2>
+        <div class="location-search">
+          <input type="text" id="weather-location" placeholder="Enter location" />
+          <button id="get-weather">Get Weather</button>
+          <button id="use-current-location"><i class="fas fa-map-marker-alt"></i> Use my location</button>
+        </div>
+        <div class="weather-container">
+          <div class="current-weather">
+            <div class="weather-icon">
+              <i class="fas fa-cloud-sun"></i>
+            </div>
+            <div class="weather-details">
+              <!-- Display weather data here -->
+              <h3 id="weather-location-display" class="location-name">Loading location...</h3>
+              <div class="date-time">--</div>
+              <div id="weather-temperature" class="temp">--°C</div>
+              <div id="weather-condition" class="condition">--</div>
+              <div id="weather-details" class="extra-info"></div>
+            </div>
+          </div>
+          <div class="forecast">
+            <h3>5-Day Forecast</h3>
+            <div class="forecast-days"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Jobs Section -->
+      <section id="jobs" class="content-section">
+        <h2>Job Search</h2>
+        <div class="job-search-form">
+          <div class="form-group">
+            <label for="job-keywords">Keywords</label>
+            <input type="text" id="job-keywords" placeholder="Job title, skills, or company" />
+          </div>
+          <div class="form-group">
+            <label for="job-location">Location</label>
+            <input type="text" id="job-location" placeholder="City, state, or zip code" />
+          </div>
+          <div class="form-group">
+            <button id="search-jobs">Search Jobs</button>
+          </div>
+        </div>
+        <div id="jobs-loading" class="hidden">Loading jobs...</div>
+        <div id="jobs-error" class="hidden"></div>
+        <div id="jobs-results" class="job-listings">
+          <div id="jobs-list">
+            <p class="empty-state">Use the search tool to find job listing for more information</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- News Section -->
+      <section id="news" class="content-section">
+        <h2>News</h2>
+        <div class="news-categories">
+          <button class="category-btn active" data-category="general">General</button>
+          <button class="category-btn" data-category="business">Business</button>
+          <button class="category-btn" data-category="technology">Technology</button>
+          <button class="category-btn" data-category="science">Science</button>
+          <button class="category-btn" data-category="health">Health</button>
+          <button class="category-btn" data-category="entertainment">Entertainment</button>
+          <button class="category-btn" data-category="sports">Sports</button>
+        </div>
+        <div class="news-search">
+          <input type="text" id="news-search-input" placeholder="Search news..." />
+          <button id="news-search-btn"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="news-loading" class="hidden">Loading news...</div>
+        <div id="news-error" class="hidden"></div>
+        <div id="news-results" class="news-articles">
+          <div id="news-list">
+            <p class="loading">Loading news articles...</p>
+          </div>
+        </div>
+        <div class="pagination">
+          <button id="prev-page" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+          <span class="page-info">Page 1</span>
+          <button id="next-page">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+      </section>
+
+      <!-- Currency Section -->
+      <section id="currency" class="content-section">
+        <h2>Currency Converter</h2>
+        <div id="currency-loading" class="hidden">Loading exchange rates...</div>
+        <div id="currency-error" class="hidden"></div>
+        <div id="currency-converter" class="currency-converter">
+          <div class="converter-form">
+            <div class="form-group">
+              <label for="amount">Amount</label>
+              <input type="number" id="currency-amount" value="1" />
+            </div>
+            <div class="form-group">
+              <label for="from-currency-full">From</label>
+              <select id="from-currency-full"></select>
+            </div>
+            <div class="swap-btn">
+              <button id="swap-currencies"><i class="fas fa-exchange-alt"></i></button>
+            </div>
+            <div class="form-group">
+              <label for="to-currency-full">To</label>
+              <select id="to-currency-full"></select>
+            </div>
+            <div class="form-group">
+              <button id="convert-currency-btn">Convert</button>
+            </div>
+          </div>
+          <div class="conversion-result-full">
+            <div class="result-amount">--</div>
+            <div class="result-text">--</div>
+            <div class="exchange-rate">1 -- = -- --</div>
+            <div class="last-updated">Last updated: --</div>
+          </div>
+        </div>
+        <div class="popular-currencies">
+          <h3>Popular Currency Pairs</h3>
+          <div class="currency-pairs"></div>
+        </div>
+        <div class="historical-rates">
+          <h3>Historical Exchange Rates</h3>
+          <div class="chart-container">
+            <canvas id="exchange-rate-chart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings" class="content-section">
+        <h2>Settings</h2>
+        <div class="settings-container">
+          <div class="settings-group">
+            <h3>Appearance</h3>
+            <div class="setting-item">
+              <span>Dark Mode</span>
+              <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          <div class="settings-group">
+            <h3>Units</h3>
+            <div class="setting-item">
+              <span>Temperature</span>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" name="temp-unit" value="celsius" checked /> Celsius
+                </label>
+                <label>
+                  <input type="radio" name="temp-unit" value="fahrenheit" /> Fahrenheit
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="settings-group">
+            <h3>Notifications</h3>
+            <div class="setting-item">
+              <span>Weather Alerts</span>
+              <label class="switch">
+                <input type="checkbox" id="weather-alerts" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <span>Job Notifications</span>
+              <label class="switch">
+                <input type="checkbox" id="job-notifications" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <span>News Alerts</span>
+              <label class="switch">
+                <input type="checkbox" id="news-alerts" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          <div class="settings-group">
+            <h3>Data Privacy</h3>
+            <div class="setting-item">
+              <span>Save Search History</span>
+              <label class="switch">
+                <input type="checkbox" id="save-history" checked />
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <button id="clear-data" class="danger-btn">Clear All Data</button>
+            </div>
+          </div>
+          <div class="settings-group security-settings">
+            <h3>Security</h3>
+            <div class="setting-item">
+              <span>Change Password</span>
+              <div class="password-form">
+                <input type="password" id="current-password" placeholder="Current password">
+                <input type="password" id="new-password" placeholder="New password">
+                <div class="password-strength"></div>
+                <button id="change-password" class="btn-primary">Update Password</button>
+              </div>
+            </div>
+            <div class="setting-item">
+              <span>Two-Factor Authentication</span>
+              <label class="switch">
+                <input type="checkbox" id="two-factor">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Notification Panel (Hidden by default) -->
+  <div class="notification-panel" id="notification-panel">
+    <div class="notification-header">
+      <h3>Notifications</h3>
+      <button id="close-notifications"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="notification-list">
+      <div class="empty-notifications">No new notifications</div>
+    </div>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content">
+      <h2>User Profile</h2>
+      <div class="profile-form">
+        <div class="password-form">
+        <div class="avatar-upload">
+          <div class="avatar">
+            <img id="avatar-image" src="/img/default-avatar.png" alt="User avatar">
+          </div>
+          <input type="file" id="avatar-upload" hidden accept="image/*">
+          <label for="avatar-upload" class="upload-btn">Change Avatar</label>
+        </div>
+        
+        <div class="form-group">
+          <label for="display-name">Display Name</label>
+          <input type="text" id="display-name" placeholder="Enter your name">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+          <label for="time-zone">Time Zone</label>
+          <select id="time-zone">
+            <option value="UTC">UTC</option>
+            <option value="EST">Eastern Time</option>
+            <option value="IST">Ind Time</option>
+            <option value="CST">Central Time</option>
+            <option value="PST">Pacific Time</option>
+          </select>
+        </div>
+        
+        <div class="password">
+          <lable for="password-form">new-password</lable>
+          <input type="text" id="password" placeholder="create youur pasword">
+        </div>
+
+        <div class="form-group">
+          <button id="save-profile" class="btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.0/chart.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.querySelectorAll('[role="menuitem"]').forEach(item => {
+      item.addEventListener('keypress', e => {
+        if (e.key === 'Enter') e.target.click();
+      });
+    });
+  </script>
+</body>
+</html>
+<!-- Add to index.html -->
+<div class="chat-interface">
+  <div class="chat-messages"></div>
+  <div class="chat-input">
+    <input type="text" id="chat-message" placeholder="Ask AI assistant...">
+    <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+    <button id="voice-input"><i class="fas fa-microphone"></i></button>
+  </div>
+</div>
