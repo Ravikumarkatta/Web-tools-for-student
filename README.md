@@ -1,4 +1,4 @@
-# AI Agent Project
+# web tools for student
 
 ## Overview
 This project is an AI-powered dashboard that integrates weather reporting, news, job search, currency conversion, and advanced AI features like predictive analysis, voice control, and personalized experiences.
