@@ -688,11 +688,28 @@ function refreshWeatherDisplay() {
 }
 
 function initializeCharts() {
-  const chartCanvas = document.getElementById('exchange-rate-chart');
-  if (!chartCanvas) return;
-  
-  const ctx = chartCanvas.getContext('2d');
-  // ...rest of chart initialization
+  const ctx = document.getElementById('exchange-rate-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [], // Time periods
+      datasets: [{
+        label: 'Exchange Rate',
+        data: [], // Rate values
+        borderColor: getComputedStyle(document.body).getPropertyValue('--primary-color'),
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
 }
 
 // Add to app.js
