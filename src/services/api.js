@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const NodeCache = require('node-cache');
 const router = express.Router();
 
 // Load environment variables in non-production environments
@@ -13,11 +14,21 @@ const NEWS_API_KEY = process.env.NEWS_API_KEY || 'your_news_api_key';
 const JOBS_API_KEY = process.env.JOBS_API_KEY || 'your_jobs_api_key';
 const CURRENCY_API_KEY = process.env.CURRENCY_API_KEY || 'your_currency_api_key';
 
+// Initialize cache
+const cache = new NodeCache({ stdTTL: 600 }); // Cache TTL of 10 minutes
+
 // ============ Weather API ============
 router.get('/weather', async (req, res) => {
   try {
     let endpoint = '';
     const { lat, lon, location } = req.query;
+    const cacheKey = `weather_${lat}_${lon}_${location}`;
+    const cachedData = cache.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Serving weather data from cache');
+      return res.json(cachedData);
+    }
 
     if (lat && lon) {
       endpoint = `http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}`;
@@ -28,6 +39,7 @@ router.get('/weather', async (req, res) => {
     }
 
     const response = await axios.get(endpoint);
+    cache.set(cacheKey, response.data); // Store in cache
     res.json(response.data);
   } catch (error) {
     console.error('Weather API error:', error.response?.data || error.message);
@@ -46,6 +58,13 @@ router.get('/weather', async (req, res) => {
 router.get('/jobs', async (req, res) => {
   try {
     const { keywords, location } = req.query;
+    const cacheKey = `jobs_${keywords}_${location}`;
+    const cachedData = cache.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Serving jobs data from cache');
+      return res.json(cachedData);
+    }
 
     if (!keywords && !location) {
       return res.status(400).json({ error: 'Please provide search keywords or location' });
@@ -79,7 +98,9 @@ router.get('/jobs', async (req, res) => {
       url: job.job_apply_link
     }));
 
-    res.json({ jobs });
+    const responseData = { jobs };
+    cache.set(cacheKey, responseData); // Store in cache
+    res.json(responseData);
   } catch (error) {
     console.error('Jobs API error:', error.response?.data || error.message);
     // Provide demo job listings in development mode
@@ -97,6 +118,14 @@ router.get('/jobs', async (req, res) => {
 router.get('/news', async (req, res) => {
   try {
     const { category = 'general' } = req.query;
+    const cacheKey = `news_${category}`;
+    const cachedData = cache.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Serving news data from cache');
+      return res.json(cachedData);
+    }
+
     const endpoint = 'https://newsapi.org/v2/top-headlines';
     const params = {
       category,
@@ -105,6 +134,7 @@ router.get('/news', async (req, res) => {
     };
 
     const response = await axios.get(endpoint, { params });
+    cache.set(cacheKey, response.data); // Store in cache
     res.json(response.data);
   } catch (error) {
     console.error('News API error:', error.response?.data || error.message);
@@ -122,8 +152,17 @@ router.get('/news', async (req, res) => {
 // ============ Currency API ============
 router.get('/currency', async (req, res) => {
   try {
+    const cacheKey = 'currency';
+    const cachedData = cache.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Serving currency data from cache');
+      return res.json(cachedData);
+    }
+
     const endpoint = 'https://api.exchangerate.host/latest';
     const response = await axios.get(endpoint);
+    cache.set(cacheKey, response.data); // Store in cache
     res.json(response.data);
   } catch (error) {
     console.error('Currency API error:', error.response?.data || error.message);

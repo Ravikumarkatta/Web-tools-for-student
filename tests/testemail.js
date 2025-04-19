@@ -29,3 +29,42 @@ transporter.sendMail({
   }
   console.log('Test email sent:', info.response);
 });
+
+const { sendEmail } = require('../src/services/emailService');
+
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn().mockReturnValue({
+    sendMail: jest.fn((options, callback) => {
+      callback(null, { response: 'Email sent successfully' });
+    })
+  })
+}));
+
+describe('Email Service - sendEmail', () => {
+  test('should send email successfully', async () => {
+    const emailOptions = {
+      to: 'test@example.com',
+      subject: 'Test Email',
+      text: 'This is a test email.'
+    };
+
+    const result = await sendEmail(emailOptions);
+    expect(result).toBe('Email sent successfully');
+  });
+
+  test('should throw an error if email sending fails', async () => {
+    jest.mocked(require('nodemailer').createTransport).mockReturnValueOnce({
+      sendMail: jest.fn((options, callback) => {
+        callback(new Error('Failed to send email'));
+      })
+    });
+
+    const emailOptions = {
+      to: 'test@example.com',
+      subject: 'Test Email',
+      text: 'This is a test email.'
+    };
+
+    await expect(sendEmail(emailOptions)).rejects.toThrow('Failed to send email');
+  });
+});

@@ -4,6 +4,22 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
+// Validate required environment variables
+const requiredEnvVars = [
+  'PORT',
+  'WEATHER_API_KEY',
+  'NEWS_API_KEY',
+  'EMAIL_USER',
+  'EMAIL_PASS'
+];
+
+requiredEnvVars.forEach((varName) => {
+  if (!process.env[varName]) {
+    console.error(`Missing required environment variable: ${varName}`);
+    process.exit(1);
+  }
+});
+
 const config = {
   // Server configuration
   port: process.env.PORT || 3000,

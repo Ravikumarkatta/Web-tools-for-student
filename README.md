@@ -23,6 +23,29 @@ This project is an AI-powered dashboard that integrates weather reporting, news,
 4. Start the server with `npm start`.
 5. Open `public/index.html` in your browser.
 
+## Running the Application with Docker
+
+To run the application using Docker, follow these steps:
+
+1. **Build the Docker Image**:
+   ```bash
+   docker-compose build
+   ```
+
+2. **Run the Application**:
+   ```bash
+   docker-compose up
+   ```
+
+3. **Access the Application**:
+   Open your browser and navigate to `http://localhost:3000`.
+
+4. **Stop the Application**:
+   To stop the application, press `Ctrl+C` in the terminal where Docker is running, or use:
+   ```bash
+   docker-compose down
+   ```
+
 ## Folder Structure
 - **public/**: Frontend static files.
 - **src/**: Core logic (AI functionalities, external API services, chatbot).
