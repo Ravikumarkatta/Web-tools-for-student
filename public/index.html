@@ -158,6 +158,11 @@
             </div>
           </div>
         </div>
+        <div id="dashboard-error" class="error-message hidden"></div>
+        <div class="loading-indicator hidden">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Loading...</span>
+        </div>
       </section>
 
       <!-- Weather Section -->
@@ -187,6 +192,11 @@
             <div class="forecast-days"></div>
           </div>
         </div>
+        <div id="weather-error" class="error-message hidden"></div>
+        <div class="loading-indicator hidden">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Loading...</span>
+        </div>
       </section>
 
       <!-- Jobs Section -->
@@ -211,6 +221,11 @@
           <div id="jobs-list">
             <p class="empty-state">Use the search tool to find job listing for more information</p>
           </div>
+        </div>
+        <div id="jobs-error" class="error-message hidden"></div>
+        <div class="loading-indicator hidden">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Loading...</span>
         </div>
       </section>
 
@@ -241,6 +256,11 @@
           <button id="prev-page" disabled><i class="fas fa-chevron-left"></i> Previous</button>
           <span class="page-info">Page 1</span>
           <button id="next-page">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div id="news-error" class="error-message hidden"></div>
+        <div class="loading-indicator hidden">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Loading...</span>
         </div>
       </section>
 
@@ -286,6 +306,11 @@
           <div class="chart-container">
             <canvas id="exchange-rate-chart"></canvas>
           </div>
+        </div>
+        <div id="currency-error" class="error-message hidden"></div>
+        <div class="loading-indicator hidden">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Loading...</span>
         </div>
       </section>
 
@@ -374,6 +399,10 @@
             </div>
           </div>
         </div>
+        <div class="loading-indicator hidden">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Loading...</span>
+        </div>
       </section>
     </div>
   </div>
@@ -446,6 +475,8 @@
       });
     });
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/node-schedule/2.1.1/node-schedule.min.js"></script>
 </body>
 </html>
 <!-- Add to index.html -->
